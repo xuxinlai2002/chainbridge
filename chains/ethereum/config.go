@@ -23,6 +23,8 @@ const DefaultGasMultiplier = 1
 var (
 	BridgeOpt             = "bridge"
 	Erc20HandlerOpt       = "erc20Handler"
+	//xxl 00
+	WethHandlerOpt       = "wethHandler"
 	Erc721HandlerOpt      = "erc721Handler"
 	GenericHandlerOpt     = "genericHandler"
 	MaxGasPriceOpt        = "maxGasPrice"
@@ -45,6 +47,7 @@ type Config struct {
 	bridgeContract         common.Address
 	erc20HandlerContract   common.Address
 	erc721HandlerContract  common.Address
+	wethHandlerContract    common.Address //xxl 00
 	genericHandlerContract common.Address
 	gasLimit               *big.Int
 	maxGasPrice            *big.Int
@@ -86,6 +89,10 @@ func parseChainConfig(chainCfg *core.ChainConfig) (*Config, error) {
 
 	config.erc20HandlerContract = common.HexToAddress(chainCfg.Opts[Erc20HandlerOpt])
 	delete(chainCfg.Opts, Erc20HandlerOpt)
+
+	//xxl 00
+	config.wethHandlerContract = common.HexToAddress(chainCfg.Opts[WethHandlerOpt])
+	delete(chainCfg.Opts, WethHandlerOpt)
 
 	config.erc721HandlerContract = common.HexToAddress(chainCfg.Opts[Erc721HandlerOpt])
 	delete(chainCfg.Opts, Erc721HandlerOpt)

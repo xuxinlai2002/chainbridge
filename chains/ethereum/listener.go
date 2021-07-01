@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/ChainSafe/ChainBridge/bindings/WETHHandler"
 	"math/big"
 	"time"
 
@@ -33,7 +34,8 @@ type listener struct {
 	cfg                    Config
 	conn                   Connection
 	router                 chains.Router
-	bridgeContract         *Bridge.Bridge // instance of bound bridge contract
+	bridgeContract         *Bridge.Bridge 			// instance of bound bridge contract
+	wethHandlerContract    *WETHHandler.WETHHandler // xxl 00
 	erc20HandlerContract   *ERC20Handler.ERC20Handler
 	erc721HandlerContract  *ERC721Handler.ERC721Handler
 	genericHandlerContract *GenericHandler.GenericHandler
@@ -61,12 +63,18 @@ func NewListener(conn Connection, cfg *Config, log log15.Logger, bs blockstore.B
 	}
 }
 
+// xxl 00
 // setContracts sets the listener with the appropriate contracts
-func (l *listener) setContracts(bridge *Bridge.Bridge, erc20Handler *ERC20Handler.ERC20Handler, erc721Handler *ERC721Handler.ERC721Handler, genericHandler *GenericHandler.GenericHandler) {
+func (l *listener) setContracts(bridge *Bridge.Bridge,
+	erc20Handler *ERC20Handler.ERC20Handler,
+	erc721Handler *ERC721Handler.ERC721Handler,
+	genericHandler *GenericHandler.GenericHandler,
+	wethHandler *WETHHandler.WETHHandler) {
 	l.bridgeContract = bridge
 	l.erc20HandlerContract = erc20Handler
 	l.erc721HandlerContract = erc721Handler
 	l.genericHandlerContract = genericHandler
+	l.wethHandlerContract = wethHandler
 }
 
 // sets the router
@@ -178,7 +186,12 @@ func (l *listener) getDepositEventsForBlock(latestBlock *big.Int) error {
 			return fmt.Errorf("failed to get handler from resource ID %x", rId)
 		}
 
-		if addr == l.cfg.erc20HandlerContract {
+		l.log.Debug("xxl HandlerContract", "handle addr", addr)
+
+		//xxl 00
+		if addr == l.cfg.wethHandlerContract{
+			m, err = l.handleWethDepositedEvent(destId, nonce)
+		}else if addr == l.cfg.erc20HandlerContract {
 			m, err = l.handleErc20DepositedEvent(destId, nonce)
 		} else if addr == l.cfg.erc721HandlerContract {
 			m, err = l.handleErc721DepositedEvent(destId, nonce)

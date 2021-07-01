@@ -22,6 +22,7 @@ package ethereum
 
 import (
 	"fmt"
+	"github.com/ChainSafe/ChainBridge/bindings/WETHHandler"
 	"math/big"
 
 	bridge "github.com/ChainSafe/ChainBridge/bindings/Bridge"
@@ -149,6 +150,12 @@ func InitializeChain(chainCfg *core.ChainConfig, logger log15.Logger, sysErr cha
 		return nil, err
 	}
 
+	//xxl 00
+	wethHandlerContract, err := WETHHandler.NewWETHHandler(cfg.wethHandlerContract,conn.Client())
+	if err != nil {
+		return nil, err
+	}
+
 	genericHandlerContract, err := GenericHandler.NewGenericHandler(cfg.genericHandlerContract, conn.Client())
 	if err != nil {
 		return nil, err
@@ -163,7 +170,7 @@ func InitializeChain(chainCfg *core.ChainConfig, logger log15.Logger, sysErr cha
 	}
 
 	listener := NewListener(conn, cfg, logger, bs, stop, sysErr, m)
-	listener.setContracts(bridgeContract, erc20HandlerContract, erc721HandlerContract, genericHandlerContract)
+	listener.setContracts(bridgeContract, erc20HandlerContract, erc721HandlerContract, genericHandlerContract,wethHandlerContract)
 
 	writer := NewWriter(conn, cfg, logger, stop, sysErr, m)
 	writer.setContract(bridgeContract)

@@ -6,6 +6,7 @@ package ethereum
 import (
 	"context"
 	"errors"
+	"fmt"
 	"math/big"
 	"time"
 
@@ -213,11 +214,16 @@ func (w *writer) watchThenExecute(m msg.Message, data []byte, dataHash [32]byte,
 
 			// query for logs
 			query := buildQuery(w.cfg.bridgeContract, utils.ProposalEvent, latestBlock, latestBlock)
+			w.log.Info("xxl log :", "query",fmt.Sprintf("%+v",query))
+
 			evts, err := w.conn.Client().FilterLogs(context.Background(), query)
+
 			if err != nil {
 				w.log.Error("Failed to fetch logs", "err", err)
 				return
 			}
+
+			w.log.Info("xxl log :", "evts",fmt.Sprintf("%+v",evts))
 
 			// execute the proposal once we find the matching finalized event
 			for _, evt := range evts {

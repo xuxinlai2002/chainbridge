@@ -8,6 +8,29 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 
+//xxl 00
+func (l *listener) handleWethDepositedEvent(destId msg.ChainId, nonce msg.Nonce) (msg.Message, error) {
+	l.log.Info("Handling fungible deposit event", "dest", destId, "nonce", nonce)
+
+	l.log.Info("xxl handleWethDepositedEvent " ,"wethHandlerContract %+v",l.wethHandlerContract)
+
+	record, err := l.wethHandlerContract.GetDepositRecord(&bind.CallOpts{From: l.conn.Keypair().CommonAddress()}, uint64(nonce), uint8(destId))
+	if err != nil {
+		l.log.Error("Error Unpacking WETH Deposit Record", "err", err)
+		return msg.Message{}, err
+	}
+
+	return msg.NewFungibleTransfer(
+		l.cfg.id,
+		destId,
+		nonce,
+		record.Amount,
+		record.ResourceID,
+		record.DestinationRecipientAddress,
+	), nil
+}
+
+
 func (l *listener) handleErc20DepositedEvent(destId msg.ChainId, nonce msg.Nonce) (msg.Message, error) {
 	l.log.Info("Handling fungible deposit event", "dest", destId, "nonce", nonce)
 
