@@ -4,6 +4,7 @@
 package ethereum
 
 import (
+	"fmt"
 	"github.com/ChainSafe/ChainBridge/bindings/Bridge"
 	"github.com/ChainSafe/chainbridge-utils/core"
 	metrics "github.com/ChainSafe/chainbridge-utils/metrics/types"
@@ -55,8 +56,20 @@ func (w *writer) setContract(bridge *Bridge.Bridge) {
 func (w *writer) ResolveMessage(m msg.Message) bool {
 	w.log.Info("Attempting to resolve message", "type", m.Type, "src", m.Source, "dst", m.Destination, "nonce", m.DepositNonce, "rId", m.ResourceId.Hex())
 
+	w.log.Info("***--- xxl 03 resolve message","msg.Message",fmt.Sprint("%+v",m.Type))
+
+
 	switch m.Type {
+
+	//xxl
+	case msg.WethTransfer:
+
+		w.log.Info("--- xxl 04 come to msg.WethTransfer", "type", m.Type)
+		return w.createWethProposal(m)
+
 	case msg.FungibleTransfer:
+
+		w.log.Info("*** xxl 04 come to FungibleTransfer", "type", m.Type)
 		return w.createErc20Proposal(m)
 	case msg.NonFungibleTransfer:
 		return w.createErc721Proposal(m)

@@ -11,13 +11,18 @@ import (
 )
 
 // constructErc20ProposalData returns the bytes to construct a proposal suitable for Erc20
-func ConstructErc20ProposalData(amount []byte, recipient []byte) []byte {
+func ConstructErc20ProposalData(amount []byte, recipient []byte, signData []byte) []byte {
+
+
 	var data []byte
 	data = append(data, common.LeftPadBytes(amount, 32)...) // amount (uint256)
 
-	recipientLen := big.NewInt(int64(len(recipient))).Bytes()
-	data = append(data, common.LeftPadBytes(recipientLen, 32)...) // length of recipient (uint256)
-	data = append(data, recipient...)                             // recipient ([]byte)
+	//recipientLen := big.NewInt(int64(len(recipient))).Bytes()
+	//data = append(data, common.LeftPadBytes(recipientLen, 32)...) // length of recipient (uint256)
+	data = append(data, recipient...)                             	// recipient ([]byte)
+	//xxl ConstructErc20ProposalData change to data
+	data = append(data, signData...)                             	// recipient ([]byte)
+
 	return data
 }
 

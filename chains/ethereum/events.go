@@ -4,6 +4,7 @@
 package ethereum
 
 import (
+	"fmt"
 	"github.com/ChainSafe/chainbridge-utils/msg"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
@@ -12,7 +13,7 @@ import (
 func (l *listener) handleWethDepositedEvent(destId msg.ChainId, nonce msg.Nonce) (msg.Message, error) {
 	l.log.Info("Handling fungible deposit event", "dest", destId, "nonce", nonce)
 
-	l.log.Info("xxl handleWethDepositedEvent " ,"wethHandlerContract %+v",l.wethHandlerContract)
+	l.log.Info("*** 01 xxl handleWethDepositedEvent ")
 
 	record, err := l.wethHandlerContract.GetDepositRecord(&bind.CallOpts{From: l.conn.Keypair().CommonAddress()}, uint64(nonce), uint8(destId))
 	if err != nil {
@@ -20,6 +21,8 @@ func (l *listener) handleWethDepositedEvent(destId msg.ChainId, nonce msg.Nonce)
 		return msg.Message{}, err
 	}
 
+	l.log.Info("xxl handleWethDepositedEvent ","SignData",fmt.Sprintf("%x",record.SignData))
+
 	return msg.NewFungibleTransfer(
 		l.cfg.id,
 		destId,
@@ -27,6 +30,7 @@ func (l *listener) handleWethDepositedEvent(destId msg.ChainId, nonce msg.Nonce)
 		record.Amount,
 		record.ResourceID,
 		record.DestinationRecipientAddress,
+		record.SignData,
 	), nil
 }
 
@@ -34,19 +38,22 @@ func (l *listener) handleWethDepositedEvent(destId msg.ChainId, nonce msg.Nonce)
 func (l *listener) handleErc20DepositedEvent(destId msg.ChainId, nonce msg.Nonce) (msg.Message, error) {
 	l.log.Info("Handling fungible deposit event", "dest", destId, "nonce", nonce)
 
+	l.log.Info("--- xxl 01 handleErc20DepositedEvent ")
+
 	record, err := l.erc20HandlerContract.GetDepositRecord(&bind.CallOpts{From: l.conn.Keypair().CommonAddress()}, uint64(nonce), uint8(destId))
 	if err != nil {
 		l.log.Error("Error Unpacking ERC20 Deposit Record", "err", err)
 		return msg.Message{}, err
 	}
 
-	return msg.NewFungibleTransfer(
+	return msg.NewWethTransfer(
 		l.cfg.id,
 		destId,
 		nonce,
 		record.Amount,
 		record.ResourceID,
 		record.DestinationRecipientAddress,
+		record.SignData,
 	), nil
 }
 

@@ -190,8 +190,10 @@ func (l *listener) getDepositEventsForBlock(latestBlock *big.Int) error {
 
 		//xxl 00
 		if addr == l.cfg.wethHandlerContract{
+			l.log.Debug("*** 00 xxl wethHandlerContract")
 			m, err = l.handleWethDepositedEvent(destId, nonce)
 		}else if addr == l.cfg.erc20HandlerContract {
+			l.log.Debug("--- 00 xxl erc20HandlerContract")
 			m, err = l.handleErc20DepositedEvent(destId, nonce)
 		} else if addr == l.cfg.erc721HandlerContract {
 			m, err = l.handleErc721DepositedEvent(destId, nonce)

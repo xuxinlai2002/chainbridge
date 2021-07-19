@@ -44,6 +44,7 @@ func fungibleTransferHandler(evtI interface{}, log log15.Logger) (msg.Message, e
 		evt.Amount.Int,
 		resourceId,
 		evt.Recipient,
+		nil,
 	), nil
 }
 

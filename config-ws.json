@@ -1,0 +1,35 @@
+{
+    "chains": [
+        {
+            "name": "my1",
+            "type": "ethereum",
+            "id": "82",
+            "endpoint": "ws://localhost:20637",
+            "from": "0x41eA6aD88bbf4E22686386783e7817bB7E82c1ed",
+            "opts": {
+                "bridge": "0x7eFD03E5E8E361E02E72c4B29e27587B4a161936",
+                "wethHandler": "0x4805A9Ae27eB169a1e27d335c3dD1460611f83c9",
+                "erc20Handler": "0x5292dBB0316e34465fB50246CB4C5E6A00E20fc1",
+                "genericHandler": "0x5292dBB0316e34465fB50246CB4C5E6A00E20fc1",
+                "gasLimit": "1000000",
+                "maxGasPrice": "10000000000",
+                "blockConfirmations": "1"
+            }
+        },
+        {
+            "name": "my2",
+            "type": "ethereum",
+            "id": "83",
+            "endpoint": "ws://localhost:21637",
+            "from": "0x4f2C793DB2163A7A081b984E6E8e2c504825668b",
+            "opts": {
+                "bridge": "0x96D7D7032eAf7266AF05E4BCB3f8f75fbc1A19E7",
+                "erc20Handler": "0xB5f8ad3F7657E9309Cb83ad794933fE8bE3D8931",
+                "genericHandler": "0xB5f8ad3F7657E9309Cb83ad794933fE8bE3D8931",
+                "gasLimit": "1000000",
+                "maxGasPrice": "10000000000",
+                "blockConfirmations": "1"
+            }
+        }
+    ]
+}
